@@ -1,43 +1,42 @@
 import { MasterContext } from "@/context/MasterContext";
-import React, { useContext, useEffect } from "react";
-import MovieCard from "../CardDetails/MovieCard/MovieCard";
-import TVshowCard from "../CardDetails/TVshowCard/TVshowCard";
-import Pagination from "../Pagination/Pagination";
+import { useContext, useEffect } from "react";
+import Pagination from "@/components/CardGroup/Pagination/Pagination";
+import MovieCard from "@/components/CardGroup/CardDetails/MovieCard/MovieCard";
+import TVshowCard from "@/components/CardGroup/CardDetails/TVshowCard/TVshowCard";
+
 
 
 interface CardGroupProps {
-  streamingType: string;
+  streamingType: "movie" | "tv";
   activeTab: string;
 }
 
-const CardContainer: React.FC<CardGroupProps> = ({
-  streamingType,
-  activeTab,
-}) => {
+const CardContainer: React.FC<CardGroupProps> = ({ streamingType, activeTab }) => {
   const { movies, setMovieOrTV, setTrendingOptions } =
     useContext(MasterContext);
 
   useEffect(() => {
+
     setMovieOrTV(streamingType);
-  }, [setMovieOrTV, setTrendingOptions, streamingType]);
+  }, [streamingType, setMovieOrTV]);
 
   setTrendingOptions(activeTab);
 
   return (
     <>
-    <Pagination/>
+      <Pagination />
       <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 lg:mx-14 mx-4">
         {movies
-          .filter((movie) => movie.poster_path)
-          .map((media, index) =>
-            streamingType == "movie" ? (
-              <MovieCard key={index} media={media} />
-            ) : (
-              <TVshowCard key={index} media={media} />
-            )
-          )}
+        .filter((movie) => movie.poster_path)
+        .map((movie, index) =>
+          streamingType == "movie" ? (
+            <MovieCard key={index} media={movie} />
+          ) : (
+            <TVshowCard key={index} media={movie} />
+          )
+        )}
       </div>
-      <Pagination/>
+      <Pagination />
     </>
   );
 };
